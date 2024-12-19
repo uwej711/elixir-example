@@ -3,24 +3,12 @@ defmodule Example do
   Documentation for `Example`.
   """
 
-  @doc """
-  Hello world.
+  def convert(input, output) do
+    {:ok, _supervisor, pid} =
+      Membrane.Pipeline.start_link(MembraneExample, %{input: input, output: output, target: self()})
 
-  ## Examples
-
-      iex> Example.hello()
-      :world
-
-  """
-  def hello do
-    IO.puts("world")
-  end
-
-  def hello(name) do
-    IO.puts(name)
-  end
-
-  def main([name]) do
-    hello(name)
+    receive do
+      :done -> Membrane.Pipeline.terminate(pid)
+    end
   end
 end
